@@ -9,7 +9,6 @@ export class DataService {
   constructor(private http: HttpClient) { }
 
   downloadArrayOfStrings() {
-    debugger;
     return this.http.get('http://localhost:4200/assets/mock/answers.json');
   }
 }

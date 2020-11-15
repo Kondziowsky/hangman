@@ -10,8 +10,6 @@ export class DataResolver implements Resolve<Observable<any>> {
   constructor(private dataService: DataService) {}
 
   resolve(route: ActivatedRouteSnapshot): Observable<any> {
-    debugger;
-    console.log('hehe');
     return this.dataService.downloadArrayOfStrings();
   }
 
