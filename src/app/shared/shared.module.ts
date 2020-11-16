@@ -1,10 +1,14 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import {OnlyLetterDirective} from './directives/only-letter/only-letter.directive';
 
 @NgModule({
-  declarations: [],
+  declarations: [OnlyLetterDirective],
+  exports: [
+    OnlyLetterDirective
+  ],
   imports: [
-    CommonModule
+    CommonModule,
   ]
 })
 export class SharedModule { }

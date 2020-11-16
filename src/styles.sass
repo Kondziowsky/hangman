@@ -1,1 +1,24 @@
-/* You can add global styles to this file, and also import other style files */
+@import 'assets/styles/mixins'
+@import '../node_modules/bootstrap/scss/bootstrap.scss'
+
+html
+  height: 100%
+  line-height: 1.15
+  font-size: 15px
+  -webkit-text-size-adjust: 100%
+  -ms-text-size-adjust: 100%
+  -ms-overflow-style: scrollbar
+  -webkit-tap-highlight-color: transparent
+
+body
+  background-color: #D6D6B1
+  margin: 0
+  height: 100%
+  font-weight: 400
+  text-align: left
+
+.page-container
+  min-height: 100%
+  margin-bottom: -30px
+  @include transition-easy
+

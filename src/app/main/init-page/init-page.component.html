@@ -1,5 +1,9 @@
-<p>init-page works!</p>
-<a [routerLink]="['/hangman']"
-   aria-controls="edycja" class="pointer ml-auto"  ngbTooltip="Edytuj instytucję">
-  Come here
-</a>
+<div class="card text-center text-white bg-dark mb-3 w-50 mx-auto">
+  <div class="card-header font-weight-bold">Welcome</div>
+  <div class="card-body">
+    <h5 class="card-title">Choose game</h5>
+    <p class="card-text"></p>
+    <button type="button" class="btn btn-outline-light" [routerLink]="['/hangman']">HANGMAN</button>
+  </div>
+</div>
+

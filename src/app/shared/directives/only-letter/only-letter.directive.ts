@@ -1,10 +1,26 @@
-import { Directive } from '@angular/core';
+import {Directive, HostListener, } from '@angular/core';
 
 @Directive({
-  selector: '[appOnlyLetter]'
+  // tslint:disable-next-line:directive-selector
+  selector: '[onlyLetter]',
 })
 export class OnlyLetterDirective {
 
-  constructor() { }
+  @HostListener('paste', ['$event', ]) blockPaste(e) {
+    const value = e.clipboardData.getData('text/plain');
+    if (!this.isLetter(value)) {
+      e.preventDefault();
+    }
+  }
 
+  @HostListener('keydown', ['$event', ]) onKeyDown(event) {
+    const e = event as KeyboardEvent;
+    if (!this.isLetter(e.key)) {
+      event.preventDefault();
+    }
+  }
+
+  isLetter(val) {
+    return RegExp(/^\p{L}/, 'u').test(val);
+  }
 }
