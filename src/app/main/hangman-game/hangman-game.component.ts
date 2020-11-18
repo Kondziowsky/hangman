@@ -1,6 +1,8 @@
 import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 import {ObjectOfLettersPattern} from '../../shared/models/objectOfLettersPattern';
+import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
+import {ModalGameOverComponent} from '../../components/modal-game-over/modal-game-over.component';
 
 @Component({
   selector: 'app-hangman-game',
@@ -15,7 +17,10 @@ export class HangmanGameComponent implements OnInit {
   stringsArray: [];
   randomizedStrings: any;
   letters: Array<ObjectOfLettersPattern>;
-  constructor(private route: ActivatedRoute) { }
+  hidedSlogan;
+  typedLetter;
+  constructor(private route: ActivatedRoute,
+              private modalService: NgbModal) { }
 
   ngOnInit() {
     this.stringsArray = this.route.snapshot.data.tablicaHasel.ArrayOfStrings;
@@ -49,6 +54,7 @@ export class HangmanGameComponent implements OnInit {
     this.ctx.stroke();
 
     this.makeLetters();
+    this.chooseHidedSlogan();
   }
 
   drawCanvas() {
@@ -61,15 +67,26 @@ export class HangmanGameComponent implements OnInit {
   }
 
   makeLetters() {
-    debugger;
     const word = ('abcdefghijklmnopqrstuvwxyz');
     this.letters = word.split('').map((char) => {
       return { name: char, chosen: false };
     });
+
+  }
+
+  chooseHidedSlogan() {
+    if (this.randomizedStrings.length > 0) {
+      this.hidedSlogan = this.randomizedStrings[0].split('').map( ch => {
+        return {char: ch, found: false};
+      });
+    } else {
+      debugger;
+      this.openEndGameModal(true);
+    }
   }
 
   sendTypedLetter(val) {
-
+    this.ngOnInit();
   }
 
   checkLetter(val) {
@@ -79,12 +96,49 @@ export class HangmanGameComponent implements OnInit {
           x.chosen = true;
         }
       });
+      this.hidedSlogan.find((x) => {
+        if (x.char === val.name) {
+          x.found = true;
+        }
+      });
+      this.typedLetter = null;
     }
+    const isFound = this.allLettersTrue();
+    if (isFound) {
+      this.randomizedStrings.shift();
+      this.chooseHidedSlogan();
+    }
+  }
+
+  private allLettersTrue() {
+    for (const letter of this.hidedSlogan) {
+      if (!letter.found) {
+        return false;
+      }
+      // if(something_wrong) break;
+    }
+    return true;
+    //  this.hidedSlogan.forEach( letter => {
+    //   if (!letter.found) { return false; }
+    // });
+    //  return true;
+    // console.log(isFound);
   }
 
   private randomizeFiveStrings() {
     const arr = [...this.stringsArray];
-    return[...Array(5)].map( () => arr.splice(Math.floor(Math.random() * arr.length), 1)[0] );
+    return[...Array(1)].map( () => arr.splice(Math.floor(Math.random() * arr.length), 1)[0] );
+  }
+
+  private openEndGameModal(success: boolean) {
+    const modalGameOver = this.modalService.open(ModalGameOverComponent, {size: 'sm', });
+    modalGameOver.result.then(
+      (result) => {
+        debugger;
+      },
+      (err) => {
+        debugger;
+      });
   }
 
 }

@@ -3,9 +3,8 @@
   <div class="card-body">
 <!--    <h5 class="card-title">You can type words on your keyboard or click on card below</h5>-->
     <h5 class="card-title">Find slogan</h5>
-    <p class="card-text">
-      {{ randomizedStrings[0] }}
-    </p>
+    <p class="card-text"></p>
+    <span class="mr-2 h3" *ngFor="let letter of hidedSlogan">{{letter.found ? letter.char : '_'}}</span>
     <div class="container">
       <div class="row p-2">
         <div class="col-12 mx-auto">
@@ -17,29 +16,24 @@
 </div>
 
 <div class="card text-center text-white bg-dark mb-3 w-50 mx-auto">
-  <div class="card-header font-weight-bold">Type letter</div>
+  <div class="card-header font-weight-bold">Type and send or choose letter</div>
   <div class="card-body">
     <h5 class="card-title"></h5>
     <p class="card-text"></p>
     <div class="container">
       <div class="row p-2">
-        <div class="col-12 col-md-6">
+        <div class="col-6 col-md-6">
           <label for="type" class="font-weight-bold"></label>
-          <input id="type" type="text" maxlength="1" onlyLetter #type />
+          <input id="type" type="text" maxlength="1" onlyLetter [(ngModel)]="typedLetter" />
+          <button type="button" class="btn btn-secondary m-2" (click)="checkLetter({name : typedLetter})">Send</button>
         </div>
-      </div>
-      <div class="row">
-        <div class="col-12 col-md-6">
-          <button type="button" class="btn btn-secondary" (click)="sendTypedLetter(type.value)">Send</button>
-        </div>
-      </div>
-      <div class="row">
-        <div class="" *ngFor="let letter of letters; let i = index">
-          <button type="button" class="btn btn-secondary btn-sm m-1" [disabled]="letter?.chosen" (click)="checkLetter(letter)">{{letter?.name}}</button>
+        <div class="col-6 col-md-6">
+          <button type="button" class="btn btn-secondary btn-sm m-1" *ngFor="let letter of letters; let i = index" [disabled]="letter?.chosen" (click)="checkLetter(letter)">{{letter?.name}}</button>
         </div>
       </div>
     </div>
   </div>
 </div>
+<button type="button" class="btn btn-secondary m-2" (click)="sendTypedLetter('a')">Send</button>
 
 <pre>randomizedStrings: {{ randomizedStrings | json }}</pre>
