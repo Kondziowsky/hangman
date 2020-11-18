@@ -8,7 +8,12 @@ import {noop} from 'rxjs';
 @Component({
   selector: 'app-hangman-game',
   templateUrl: './hangman-game.component.html',
-  styles: ['canvas { background-color: #D6D6B1 }']
+  styles: [
+    'canvas { background-color: #D6D6B1 }',
+    '.alert-dark {background-color: #343a40; color: #D6D6B1; font-weight: bold; }',
+    '.lastChance {background-color: #ed3d3d; animation: 1s ease infinite pulse}',
+    '.lastWord {background-color: #29e552; animation: 1s ease infinite pulse}'
+  ]
 })
 export class HangmanGameComponent implements OnInit {
   @ViewChild('canvas', { static: true })
@@ -20,18 +25,15 @@ export class HangmanGameComponent implements OnInit {
   letters: Array<ObjectOfLettersPattern>;
   hidedSlogan;
   attemptCounter: number;
+  interval;
+  timeSpent;
 
   constructor(private route: ActivatedRoute,
               private modalService: NgbModal) { }
 
   ngOnInit() {
     this.setVariables();
-    this.stringsArray = this.route.snapshot.data.tablicaHasel.ArrayOfStrings;
-    this.randomizedStrings = this.randomizeFiveStrings();
-    this.ctx = this.canvas.nativeElement.getContext('2d');
-
     this.drawCanvas();
-
     this.makeLetters();
     this.chooseHidedSlogan();
   }
@@ -60,6 +62,7 @@ export class HangmanGameComponent implements OnInit {
         return {char: ch, found: false};
       });
     } else {
+      clearInterval(this.interval);
       this.openEndGameModal(true);
     }
   }
@@ -87,13 +90,26 @@ export class HangmanGameComponent implements OnInit {
     const isSloganFound = this.allLettersTrue();
     if (isSloganFound) {
       this.randomizedStrings.shift();
+      this.attemptCounter = 6;
+      this.drawCanvas();
       this.refreshKeyboard();
       this.chooseHidedSlogan();
     }
   }
 
   private setVariables() {
+    this.stringsArray = this.route.snapshot.data.tablicaHasel.ArrayOfStrings;
+    this.randomizedStrings = this.randomizeFiveStrings();
     this.attemptCounter = 6;
+    this.timeSpent = 0;
+    this.ctx = this.canvas.nativeElement.getContext('2d');
+    this.setTimer();
+  }
+
+  private setTimer() {
+    this.interval = setInterval( () => {
+      this.timeSpent++;
+    }, 1000);
   }
 
   private refreshKeyboard() {
@@ -154,17 +170,17 @@ export class HangmanGameComponent implements OnInit {
       size: 'sm',
       backdrop: 'static',
       centered: true,
-      backdropClass: success ? 'success-backdrop' : 'failure-backdrop'
+      backdropClass: success ? 'success-backdrop' : 'failure-backdrop',
     });
     modalGameOver.componentInstance.success = success;
+    modalGameOver.componentInstance.timeSpent = this.timeSpent;
     modalGameOver.result.then(
       (result) => {
         if (result && result.tryAgain) {
           this.ngOnInit();
         }
       },
-      (err) => {
-      });
+      (err) => {});
   }
 
 }

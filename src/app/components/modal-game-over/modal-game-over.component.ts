@@ -9,6 +9,7 @@ import {Router} from '@angular/router';
 })
 export class ModalGameOverComponent implements OnInit {
   @Input() success: boolean;
+  @Input() timeSpent: number;
 
   modalTitle: string;
   modalText: string;

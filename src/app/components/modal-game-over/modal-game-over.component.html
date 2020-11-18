@@ -1,8 +1,10 @@
-<div class="modal-header text-center">
-  <h4 class="modal-title">{{ modalTitle }}</h4>
-</div>
-<div class="modal-body">
-  <p>{{ modalText }}</p>
-  <button type="button" class="btn btn-outline-dark" (click)="goToMainMenu()">Go to main menu</button>
-  <button type="button" class="btn btn-outline-dark ml-2" (click)="tryAgain()">Try again</button>
+<div [ngClass]="success ? 'success-modal' : 'failure-modal'">
+  <div class="modal-header">
+    <h4 class="modal-title text-center">{{ modalTitle }}</h4>
+  </div>
+  <div class="modal-body">
+    <p class="text-center" *ngIf="success">Time spent: {{ timeSpent }} seconds</p>
+    <button type="button" class="btn" [ngClass]="success ? 'btn-success' : 'btn-failure'" (click)="goToMainMenu()">Go to main menu</button>
+    <button type="button" class="btn ml-2" [ngClass]="success ? 'btn-success' : 'btn-failure'" (click)="tryAgain()">Try again</button>
+  </div>
 </div>

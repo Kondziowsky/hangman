@@ -1,5 +1,5 @@
 <div class="card text-center text-white bg-hangman mb-3 w-50 mx-auto mt-2">
-  <div class="card-header font-weight-bold">Try to guess drawed word!</div>
+  <div class="card-header font-weight-bold">Try to guess five drawed word!</div>
   <div class="card-body">
     <h5 class="card-title">Find slogan</h5>
     <p class="card-text"></p>
@@ -10,8 +10,12 @@
           <canvas class="mt-5" #canvas width="400" height="400"></canvas>
         </div>
         <div class="col-3 my-auto">
-          <p class="card-text alert-danger">LEFT ATTEMPTS: {{ attemptCounter }}</p>
-
+          <div class="alert alert-dark" role="alert" [ngClass]="{'lastChance': attemptCounter === 1}">
+            LEFT ATTEMPTS: {{ attemptCounter }}
+          </div>
+          <div class="alert alert-dark" role="alert" [ngClass]="{'lastWord': randomizedStrings.length === 1}">
+            LEFT WORDS: {{ randomizedStrings.length }}
+          </div>
         </div>
       </div>
     </div>
@@ -20,7 +24,7 @@
 
 <div class="card text-center text-white bg-hangman mb-3 w-25 mx-auto">
   <div class="card-header font-weight-bold">Choose letter</div>
-  <div class="card-body">
+  <div class="card-body p-0">
     <h5 class="card-title"></h5>
     <p class="card-text"></p>
     <div class="container">

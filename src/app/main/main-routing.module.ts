@@ -7,14 +7,6 @@ import {DataResolver} from '../shared/resolvers/data-resolver';
 const MAIN_ROUTER: Routes = [
   {
     path: '', component: InitPageComponent,
-    // children: [
-    //   {
-    //     path: 'hangman', component: HangmanGameComponent,
-    //     resolve: {
-    //       tablicaHasel: DataResolver
-    //     } ,
-    //   },
-    // ],
     runGuardsAndResolvers: 'always',
   },
   {
