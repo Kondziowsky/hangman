@@ -8,7 +8,7 @@ import {noop} from 'rxjs';
 @Component({
   selector: 'app-hangman-game',
   templateUrl: './hangman-game.component.html',
-  styleUrls: ['./hangman-game.component.sass']
+  styles: ['canvas { background-color: #D6D6B1 }']
 })
 export class HangmanGameComponent implements OnInit {
   @ViewChild('canvas', { static: true })
@@ -19,7 +19,6 @@ export class HangmanGameComponent implements OnInit {
   randomizedStrings: any;
   letters: Array<ObjectOfLettersPattern>;
   hidedSlogan;
-  // typedLetter;
   attemptCounter: number;
 
   constructor(private route: ActivatedRoute,
@@ -63,10 +62,6 @@ export class HangmanGameComponent implements OnInit {
     } else {
       this.openEndGameModal(true);
     }
-  }
-
-  sendTypedLetter(val) {
-    this.ngOnInit();
   }
 
   checkLetter(val) {
@@ -155,7 +150,12 @@ export class HangmanGameComponent implements OnInit {
   }
 
   private openEndGameModal(success: boolean) {
-    const modalGameOver = this.modalService.open(ModalGameOverComponent, {size: 'sm', backdrop: 'static', centered: true, backdropClass: success ? 'success-backdrop' : 'failure-backdrop' });
+    const modalGameOver = this.modalService.open(ModalGameOverComponent, {
+      size: 'sm',
+      backdrop: 'static',
+      centered: true,
+      backdropClass: success ? 'success-backdrop' : 'failure-backdrop'
+    });
     modalGameOver.componentInstance.success = success;
     modalGameOver.result.then(
       (result) => {

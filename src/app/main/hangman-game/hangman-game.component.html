@@ -1,11 +1,9 @@
-
 <div class="card text-center text-white bg-hangman mb-3 w-50 mx-auto mt-2">
   <div class="card-header font-weight-bold">Try to guess drawed word!</div>
   <div class="card-body">
-<!--    <h5 class="card-title">You can type words on your keyboard or click on card below</h5>-->
     <h5 class="card-title">Find slogan</h5>
     <p class="card-text"></p>
-    <span class="mr-2 h3" *ngFor="let letter of hidedSlogan">{{letter.found ? letter.char : '_'}}</span>
+    <span class="mr-2 h3 text-muted" *ngFor="let letter of hidedSlogan">{{letter.found ? letter.char : '_'}}</span>
     <div class="container">
       <div class="row p-2">
         <div class="col-9 mx-auto">
