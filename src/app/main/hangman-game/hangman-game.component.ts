@@ -3,6 +3,7 @@ import {ActivatedRoute} from '@angular/router';
 import {ObjectOfLettersPattern} from '../../shared/models/objectOfLettersPattern';
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import {ModalGameOverComponent} from '../../components/modal-game-over/modal-game-over.component';
+import {noop} from 'rxjs';
 
 @Component({
   selector: 'app-hangman-game',
@@ -18,46 +19,26 @@ export class HangmanGameComponent implements OnInit {
   randomizedStrings: any;
   letters: Array<ObjectOfLettersPattern>;
   hidedSlogan;
-  typedLetter;
+  // typedLetter;
+  attemptCounter: number;
+
   constructor(private route: ActivatedRoute,
               private modalService: NgbModal) { }
 
   ngOnInit() {
+    this.setVariables();
     this.stringsArray = this.route.snapshot.data.tablicaHasel.ArrayOfStrings;
     this.randomizedStrings = this.randomizeFiveStrings();
     this.ctx = this.canvas.nativeElement.getContext('2d');
 
     this.drawCanvas();
 
-    this.ctx.beginPath();
-    // -> głowa
-    this.ctx.arc(200, 100, 50, 0, 2 * Math.PI);
-
-    // -> tułów
-    this.ctx.moveTo(200, 150);
-    this.ctx.lineTo(200, 270);
-
-    // -> nogi
-    this.ctx.moveTo(200, 270);
-    this.ctx.lineTo(150, 350);
-
-    this.ctx.moveTo(200, 270);
-    this.ctx.lineTo(250, 350);
-
-    // -> rece
-    this.ctx.moveTo(200, 210);
-    this.ctx.lineTo(130, 180);
-
-    this.ctx.moveTo(200, 210);
-    this.ctx.lineTo(280, 180);
-
-    this.ctx.stroke();
-
     this.makeLetters();
     this.chooseHidedSlogan();
   }
 
   drawCanvas() {
+    this.ctx.clearRect(0, 0, 400, 400);
     this.ctx.beginPath();
     this.ctx.moveTo(200, 50);
     this.ctx.lineTo(200, 10);
@@ -80,7 +61,6 @@ export class HangmanGameComponent implements OnInit {
         return {char: ch, found: false};
       });
     } else {
-      debugger;
       this.openEndGameModal(true);
     }
   }
@@ -96,17 +76,36 @@ export class HangmanGameComponent implements OnInit {
           x.chosen = true;
         }
       });
-      this.hidedSlogan.find((x) => {
-        if (x.char === val.name) {
-          x.found = true;
-        }
-      });
-      this.typedLetter = null;
+      const letterFound = this.hidedSlogan.find( x => x.char === val.name);
+      if (!letterFound) {
+        this.attemptCounter--;
+        this.attemptCounter === 0 ? this.openEndGameModal(false) : noop();
+        this.checkCanvas();
+      } else {
+        this.hidedSlogan.find((x) => {
+          if (x.char === val.name) {
+            x.found = true;
+          }
+        });
+      }
     }
-    const isFound = this.allLettersTrue();
-    if (isFound) {
+    const isSloganFound = this.allLettersTrue();
+    if (isSloganFound) {
       this.randomizedStrings.shift();
+      this.refreshKeyboard();
       this.chooseHidedSlogan();
+    }
+  }
+
+  private setVariables() {
+    this.attemptCounter = 6;
+  }
+
+  private refreshKeyboard() {
+    for (const key in this.letters) {
+      if (this.letters.hasOwnProperty(key)) {
+        this.letters[key].chosen = false;
+      }
     }
   }
 
@@ -115,29 +114,56 @@ export class HangmanGameComponent implements OnInit {
       if (!letter.found) {
         return false;
       }
-      // if(something_wrong) break;
     }
     return true;
-    //  this.hidedSlogan.forEach( letter => {
-    //   if (!letter.found) { return false; }
-    // });
-    //  return true;
-    // console.log(isFound);
+  }
+
+  private checkCanvas() {
+    this.ctx.beginPath();
+
+    switch (this.attemptCounter) {
+      case 5:
+        this.ctx.arc(200, 100, 50, 0, 2 * Math.PI);
+        break;
+      case 4:
+        this.ctx.moveTo(200, 150);
+        this.ctx.lineTo(200, 270);
+        break;
+      case 3:
+        this.ctx.moveTo(200, 270);
+        this.ctx.lineTo(150, 350);
+        break;
+      case 2:
+        this.ctx.moveTo(200, 270);
+        this.ctx.lineTo(250, 350);
+        break;
+      case 1:
+        this.ctx.moveTo(200, 210);
+        this.ctx.lineTo(130, 180);
+        break;
+      case 0:
+        this.ctx.moveTo(200, 210);
+        this.ctx.lineTo(280, 180);
+        break;
+    }
+    this.ctx.stroke();
   }
 
   private randomizeFiveStrings() {
     const arr = [...this.stringsArray];
-    return[...Array(1)].map( () => arr.splice(Math.floor(Math.random() * arr.length), 1)[0] );
+    return[...Array(5)].map( () => arr.splice(Math.floor(Math.random() * arr.length), 1)[0] );
   }
 
   private openEndGameModal(success: boolean) {
-    const modalGameOver = this.modalService.open(ModalGameOverComponent, {size: 'sm', });
+    const modalGameOver = this.modalService.open(ModalGameOverComponent, {size: 'sm', backdrop: 'static', centered: true, backdropClass: success ? 'success-backdrop' : 'failure-backdrop' });
+    modalGameOver.componentInstance.success = success;
     modalGameOver.result.then(
       (result) => {
-        debugger;
+        if (result && result.tryAgain) {
+          this.ngOnInit();
+        }
       },
       (err) => {
-        debugger;
       });
   }
 

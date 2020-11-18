@@ -1,4 +1,5 @@
-<div class="card text-center text-white bg-dark mb-3 w-50 mx-auto">
+
+<div class="card text-center text-white bg-hangman mb-3 w-50 mx-auto mt-2">
   <div class="card-header font-weight-bold">Try to guess drawed word!</div>
   <div class="card-body">
 <!--    <h5 class="card-title">You can type words on your keyboard or click on card below</h5>-->
@@ -7,33 +8,29 @@
     <span class="mr-2 h3" *ngFor="let letter of hidedSlogan">{{letter.found ? letter.char : '_'}}</span>
     <div class="container">
       <div class="row p-2">
-        <div class="col-12 mx-auto">
+        <div class="col-9 mx-auto">
           <canvas class="mt-5" #canvas width="400" height="400"></canvas>
+        </div>
+        <div class="col-3 my-auto">
+          <p class="card-text alert-danger">LEFT ATTEMPTS: {{ attemptCounter }}</p>
+
         </div>
       </div>
     </div>
   </div>
 </div>
 
-<div class="card text-center text-white bg-dark mb-3 w-50 mx-auto">
-  <div class="card-header font-weight-bold">Type and send or choose letter</div>
+<div class="card text-center text-white bg-hangman mb-3 w-25 mx-auto">
+  <div class="card-header font-weight-bold">Choose letter</div>
   <div class="card-body">
     <h5 class="card-title"></h5>
     <p class="card-text"></p>
     <div class="container">
-      <div class="row p-2">
-        <div class="col-6 col-md-6">
-          <label for="type" class="font-weight-bold"></label>
-          <input id="type" type="text" maxlength="1" onlyLetter [(ngModel)]="typedLetter" />
-          <button type="button" class="btn btn-secondary m-2" (click)="checkLetter({name : typedLetter})">Send</button>
-        </div>
-        <div class="col-6 col-md-6">
-          <button type="button" class="btn btn-secondary btn-sm m-1" *ngFor="let letter of letters; let i = index" [disabled]="letter?.chosen" (click)="checkLetter(letter)">{{letter?.name}}</button>
+      <div class="row p-2 justify-content-center">
+        <div class="col-12">
+          <button type="button" class="btn btn-hangman btn-sm m-1" *ngFor="let letter of letters; let i = index" [disabled]="letter?.chosen" (click)="checkLetter(letter)">{{letter?.name}}</button>
         </div>
       </div>
     </div>
   </div>
 </div>
-<button type="button" class="btn btn-secondary m-2" (click)="sendTypedLetter('a')">Send</button>
-
-<pre>randomizedStrings: {{ randomizedStrings | json }}</pre>
