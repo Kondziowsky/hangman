@@ -18,6 +18,7 @@ export class OnlyLetterDirective {
     if (!this.isLetter(e.key)) {
       event.preventDefault();
     }
+    console.log(e);
   }
 
   isLetter(val) {
