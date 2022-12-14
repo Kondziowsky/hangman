@@ -11,6 +11,8 @@ export class OnlyLetterDirective {
     if (!this.isLetter(value)) {
       e.preventDefault();
     }
+      console.log(value);
+
   }
 
   @HostListener('keydown', ['$event', ]) onKeyDown(event) {
